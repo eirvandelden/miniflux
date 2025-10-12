@@ -1,0 +1,35 @@
+service: miniflux
+image: ghcr.io/miniflux/miniflux:latest
+
+registry:
+  username: dummy
+  password: dummy
+
+servers:
+  web:
+    hosts:
+      - 192.168.1.216
+
+accessories:
+  db:
+    image: postgres:15
+    host: 192.168.1.216
+    env:
+      clear:
+        POSTGRES_DB: miniflux
+        POSTGRES_USER: miniflux
+        POSTGRES_PASSWORD: secretpassword
+    volumes:
+      - /home/app_storage/miniflux/db:/var/lib/postgresql/data
+
+  miniflux:
+    image: ghcr.io/miniflux/miniflux:latest
+    host: 192.168.1.216
+    port: "3010:8080"
+    env:
+      clear:
+        DATABASE_URL: postgres://miniflux:secretpassword@miniflux-db/miniflux?sslmode=disable
+        RUN_MIGRATIONS: "1"
+        CREATE_ADMIN: "1"
+        ADMIN_USERNAME: "eirvandelden"
+        ADMIN_PASSWORD: "changeme"
