@@ -1,14 +1,24 @@
 service: miniflux
-image: ghcr.io/miniflux/miniflux:latest
+image: ignore
 
 registry:
-  username: dummy
-  password: dummy
+  username: eirvandelden
 
 servers:
   web:
     hosts:
       - 192.168.1.216
+
+proxy:
+  ssl: false
+  hosts:
+    - rss.vandelden.family
+
+builder:
+  arch: amd64
+  remote: ssh://root@192.168.1.128
+  local: false
+  context: "."
 
 accessories:
   db:
@@ -23,7 +33,7 @@ accessories:
       - /home/app_storage/miniflux/db:/var/lib/postgresql/data
 
   miniflux:
-    image: ghcr.io/miniflux/miniflux:latest
+    image: miniflux/miniflux:latest
     host: 192.168.1.216
     port: "3010:8080"
     env:
